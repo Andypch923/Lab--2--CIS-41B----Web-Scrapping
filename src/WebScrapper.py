@@ -1,6 +1,7 @@
 from typing import NamedTuple
 from bs4 import BeautifulSoup as bs
 from urllib.request import urlopen as uReq
+import requests
 import pandas as pd
 
 myUrl = "https://en.wikipedia.org/wiki/List_of_countries_by_carbon_dioxide_emissions"
@@ -22,8 +23,7 @@ co2_dataFrame = {
 }
 
 
-
-co2table = page_soup.findAll("table",{"class":"wikitable sortable jquery-tablesorter"})
-print(len(co2table))
+co2table = page_soup.findAll("table",{"class":"wikitable sortable"})
+print(co2table[0])
 
 
