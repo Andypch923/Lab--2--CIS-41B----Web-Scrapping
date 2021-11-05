@@ -1,49 +1,35 @@
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+import pandas as pd
+from collections import namedtuple
+from urllib.request import urlopen
+class input:
+# open/read
+    def __init__(self):
+        html = urlopen("https://en.wikipedia.org/wiki/List_of_countries_by_carbon_dioxide_emissions")
+        page_html = html.read()
+        parseHtml = BeautifulSoup(page_html, 'html.parser')
+        table = parseHtml.find('table', {'class':'wikitable sortable'})
 
-import sqlite3
+#Create a NamedTuple
+        co2NT = namedtuple('co2NT',['country','percentage'])
+#Create an empty list
+        self.lst = []
+        counter = 0
+        for i in table.find_all('tr'): 
+                if counter>1: 
+                        title = i.text.split('\n')
+                        nameOfCountry = title[1] 
+                        nameOfCountry = nameOfCountry[1:len(nameOfCountry)]
+                        NT = co2NT(nameOfCountry,title[5]) 
+                        print(NT)
+                        self.lst.append(NT)
+                counter += 1
+    def getlst(self):
+        return self.lst
 
-class DataBase:
-    def init(self,lst):
-        self.lst = lst
-    def connect(self):
-            #name the database
-            connect = sqlite3.connect('CO2.db')
-            #create curser
-            cursor = connect.cursor()
-            Query = "select sqlite_version();"
-            cursor.execute(Query)
-            data = cursor.fetchall()
+def main():
+        inputObj = input()
 
+main()
 
-    def table(self):
-            connect = sqlite3.connect('CO2.db')
-            create_table_query = '''CREATE TABLE Database (
-                                        country PRIMARY KEY, percentage Float);'''
-
-            cursor = connect.cursor()
-            cursor.execute(create_table_query)
-            #table created
-            connect.commit()
-
-
-    def insert(self,lst):
-            connect = sqlite3.connect('CO2.db')
-            cursor = connect.cursor()
-            insert_query = """ INSERT INTO Database
-                                    (country,percentage) VALUES (?,?),lst"""
-            cursor.executemany(insert_query)
-            connect.commit()
-
-    #read table from db before graphing
-    def readTable(self, lst):
-            connect = sqlite3.connect('CO2.db')
-            cursor = connect.cursor()
-            query = """SELECT * from Database"""
-            cursor.execute(query)
-            data = cursor.fetchall()
-            country = []
-            percentage= []
-            for row in data:
-                country.append(row[0])
-                percentage.append (row[1])
-            return country, percentage
-            cursor.close()
