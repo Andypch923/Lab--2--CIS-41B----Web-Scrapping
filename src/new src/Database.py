@@ -20,7 +20,7 @@ class DataBase:
         try:
             connect = sqlite3.connect('CO2.db')
             create_table_query = '''CREATE TABLE Database (
-                                        country PRIMARY KEY, percentage TEXT)'''
+                                        country PRIMARY KEY, percentages FLOAT)'''
 
             cursor = connect.cursor()
             cursor.execute(create_table_query)
@@ -35,8 +35,9 @@ class DataBase:
             connect = sqlite3.connect('CO2.db')
             cursor = connect.cursor()
             insert_query = """ INSERT INTO Database
-                                    (country,percentage) VALUES (?,?)"""
+                                    (country,percentages) VALUES (?,?)"""
             cursor.executemany(insert_query,lst)
+            cursor.execute("DELETE FROM Database WHERE country LIKE '%World%'")
             connect.commit()
             cursor.close()
 
@@ -47,14 +48,14 @@ class DataBase:
         try:
             connect = sqlite3.connect('CO2.db')
             cursor = connect.cursor()
-            query = """SELECT * from Database ORDER BY percentage LIMIT 10"""
+            query = """SELECT country,percentages from Database ORDER BY percentages DESC LIMIT 10"""
             cursor.execute(query)
             data = cursor.fetchall()
             self.country = []
             self.percentage= []
             for row in data:
                 self.country.append(row[0])
-                self.percentage.append (row[1])
+                self.percentage.append(row[1])
             cursor.close()
             return self.country, self.percentage
 
