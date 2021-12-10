@@ -1,0 +1,1 @@
+temp.insert(scrapperObj.getlistOfCO2Data())
