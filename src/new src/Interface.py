@@ -14,9 +14,7 @@ class Graph:
         self.percentage = percentage
 
     def piechart(self):
-        print(self.country)
-        print(self.percentage)
-        plt.pie(np.array(self.percentage),labels = np.array(self.country))
+        plt.pie(np.array(self.percentage),labels = np.array(self.country),textprops={'fontsize': 5})
         plt.show()
 
 class FrontEnd:
